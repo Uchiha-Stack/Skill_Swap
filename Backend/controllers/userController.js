@@ -1,14 +1,14 @@
 import User from '../models/User.js';
 
-// Compare arrays ignoring order
 const arraysEqual = (a, b) => {
   if (!Array.isArray(a) || !Array.isArray(b)) return false;
-  return a.length === b.length && a.every(val => b.includes(val));
+  if (a.length !== b.length) return false;
+  return a.every(val => b.includes(val));
 };
 
 export const updateUser = async (req, res) => {
   try {
-    const userId = req.user.id; // assuming JWT middleware attaches user
+    const userId = req.user.id;
     const existingUser = await User.findById(userId);
 
     if (!existingUser) {
@@ -25,7 +25,6 @@ export const updateUser = async (req, res) => {
       isPublic
     } = req.body;
 
-    // Check if data has changed
     const hasChanged =
       name !== existingUser.name ||
       location !== existingUser.location ||
@@ -42,7 +41,7 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Update only the fields provided
+    // Apply updates
     if (name !== undefined) existingUser.name = name;
     if (location !== undefined) existingUser.location = location;
     if (profilePhoto !== undefined) existingUser.profilePhoto = profilePhoto;
@@ -65,10 +64,10 @@ export const updateUser = async (req, res) => {
 };
 
 
-
+// Get current logged-in user's profile
 export const getUser = async (req, res) => {
   try {
-    const userId = req.user.id; // assuming JWT middleware attaches user
+    const userId = req.user.id;
     const user = await User.findById(userId).select('-password');
 
     if (!user) {
