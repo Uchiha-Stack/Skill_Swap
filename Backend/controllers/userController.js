@@ -8,8 +8,9 @@ const arraysEqual = (a, b) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const existingUser = await User.findById(userId);
+    const email = req.user.email; // Assuming user ID is stored in email
+    const existingUser = await User.findById(email);
+    console.log('Existing User:', existingUser);
 
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found' });
